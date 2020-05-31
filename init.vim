@@ -20,6 +20,7 @@ set fileformat=unix
 set encoding=utf-8
 let g:airline_powerline_fonts = 1 "for ryanoasis/devicons to work if using airline
 let g:python3_host_prog="/home/neovim/.local/share/vendorvenv/python3_neovim_provider/bin/python"
+let g:slime_target = "neovim"
 set path+=**
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -49,11 +50,6 @@ function! Stripwhite()
 endfun
 "strip trailing white spaces
 
-" let g:jedi#force_py_version = 2
-" let g:UltisnipsUsePythonVersion = 2
-" let g:conda_startup_msg_suppress = 0 
-let g:python3_host_prog = '/Users/spencertrinh/miniconda3/envs/py37/bin/python3.7'
-"prevents py2.7 from loading, only py3
 let g:loaded_python_provider = 1 
 let python_highlight_all = 1
 set foldmethod=marker
@@ -97,3 +93,10 @@ map <silent><leader>rc <Plug>(IPy-RunCell)
 map <silent><leader>rr <Plug>(IPy-RunAll)
 map <silent><leader>xx <Plug>(IPy-Interrupt)
 map <silent><leader>tt <Plug>(IPy-Terminate)
+
+
+nnoremap <leader>v :e $MYVIMRC<cr>
+nnoremap <silent> <leader>f :FZF<cr>
+"move the lines up or down 
+nnoremap <C-j> :m+<cr>
+nnoremap <C-k> :m-2<cr>
