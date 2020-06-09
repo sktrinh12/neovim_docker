@@ -1,6 +1,6 @@
 # NeovimDocker
 
-Attempt to dockerize a neovim IDE with python autocomplete and ipython capabilities
+Attempt to dockerize a neovim IDE with fzf, python autocomplete (deoplete), ipython capabilities (vim-slime) and other popular vim plugins
 
 ## Code borrowed from:  
 
@@ -14,11 +14,11 @@ docker run \
         --rm -it \
         -v $(pwd):/mnt/workspace \
         -v $HOME/.dotfiles/nvim:/home/neovim/.config/nvim \
-        nicodebo/neovim-docker:latest \
+        neovim-docker:latest \ #name of the docker container
         "$@"
 
 ```
 
 ## Remarks
 
-Must `cd` into the directory where the files you want to edit are located.
+Must `cd` into the directory where the files you want to edit are located. The `entrypoint.sh` will launch a python interpreter automatically. In order to send commands from the editor to the REPL; simply move to the terminal pane and type `echo b:terminal_job_id` and enter the output into `:SlimeConfig`.
