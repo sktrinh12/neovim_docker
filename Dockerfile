@@ -2,7 +2,6 @@ FROM alpine:latest as builder
 
 WORKDIR /mnt/build/ctags
 
-#RUN apk --no-cache add \
 RUN apk add \
 	git \
 	xfce4-dev-tools \
@@ -16,22 +15,29 @@ RUN \
 	&& make \
 	&& make install
 
+ENV RG_VERSION=11.0.2
+
+RUN set -x \
+    && wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl.tar.gz \
+    && tar xzf ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl.tar.gz \
+    && mv ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl/rg /rg
+
 FROM alpine:latest
 
 ENV \
-        UID="1000" \
-        GID="1000" \
-        UNAME="neovim" \
-        GNAME="neovim" \
-        SHELL="/bin/sh" \
-        WORKSPACE="/mnt/workspace" \
-	NVIM_CONFIG="/home/neovim/.config/nvim" \
-	NVIM_PCK="/home/neovim/.local/share/nvim/site/pack" \
-	ENV_DIR="/home/neovim/.local/share/vendorvenv" \
-	NVIM_PROVIDER_PYLIB="python3_neovim_provider" \
-	PATH="/home/neovim/.local/bin:${PATH}"
+    UNAME="neovim" \
+    GNAME="neovim" \
+    SHELL="/bin/sh" \
+    WORKSPACE="/mnt/workspace" \
+    NVIM_CONFIG="/home/neovim/.config/nvim" \
+    NVIM_PCK="/home/neovim/.local/share/nvim/site/pack" \
+    ENV_DIR="/home/neovim/.local/share/vendorvenv" \
+    NVIM_PROVIDER_PYLIB="python3_neovim_provider" \
+    PATH="/home/neovim/.local/bin:${PATH}"
 
 COPY --from=builder /usr/local/bin/ctags /usr/local/bin
+
+COPY --from=builder /rg /usr/local/bin/
 
 RUN \
 	# install packages
@@ -87,7 +93,7 @@ RUN \
 	&& addgroup "${GNAME}" \
 	&& adduser -D -G "${GNAME}" -g "" -s "${SHELL}" "${UNAME}" \
 	# enable no password for the user and all cmds
-        && echo "${UNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+    && echo "${UNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
 	# install neovim python3 provider in virtualenv
 	&& sudo -u neovim python3 -m venv "${ENV_DIR}/${NVIM_PROVIDER_PYLIB}" \
 	&& "${ENV_DIR}/${NVIM_PROVIDER_PYLIB}/bin/pip" install --upgrade pip \
@@ -111,30 +117,22 @@ RUN \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/wellle/targets.vim \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/SirVer/ultisnips \
 	&& git -C "${NVIM_PCK}/filetype/start" clone --depth 1 https://github.com/mattn/emmet-vim \
-	#&& git -C "${NVIM_PCK}/filetype/start" clone --depth 1 https://github.com/lervag/vimtex \
-	&& git -C "${NVIM_PCK}/colors/opt" clone --depth 1 https://github.com/fxn/vim-monochrome \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/autozimu/LanguageClient-neovim \
-	# && git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/bfredl/nvim-ipy \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/scrooloose/nerdtree \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/scrooloose/syntastic \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/zchee/deoplete-jedi \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/Shougo/deoplete.nvim \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/tpope/vim-fugitive \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/bling/vim-airline \
-	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/zanglg/nova.vim \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/sk1418/Join \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/alvan/vim-closetag \
-	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/junegunn/seoul256.vim \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/Xuyuanp/nerdtree-git-plugin \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/ryanoasis/vim-devicons \
-	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/crusoexia/vim-monokai \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/jpalardy/vim-slime \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/hanschen/vim-ipython-cell \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/davidhalter/jedi \
 	#&& git -C "${NVIM_PCK}/fzf" clone --depth 1 https://github.com/junegunn/fzf.git \
 	#&& cd "${NVIM_PCK}/fzf" && ls "${NVIM_PCK}/fzf/fzf" && "${NVIM_PCK}/fzf/fzf/install" \
-	#&& nvim --headless +PlugInstall +qall \
-	#&& nvim --headless +UpdateRemotePlugins +qall \
 	&& cd "${NVIM_PCK}/common/start/LanguageClient-neovim/" && sh install.sh \
 	&& mkdir -p /home/neovim/.local/share/nvim/shada \
 	&& touch /home/neovim/.local/share/nvim/main.shada \
