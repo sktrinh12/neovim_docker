@@ -59,8 +59,6 @@ RUN \
 		# add fuzzy finder
 	fzf \
 		# needed to install fzf
-    ripgrep
-        # needed for Rg ripgrep searching of code lines
 	bash \
 	git \
 		#copy paste from editor
@@ -114,18 +112,22 @@ RUN \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/SirVer/ultisnips \
 	&& git -C "${NVIM_PCK}/filetype/start" clone --depth 1 https://github.com/mattn/emmet-vim \
 	#&& git -C "${NVIM_PCK}/filetype/start" clone --depth 1 https://github.com/lervag/vimtex \
+	&& git -C "${NVIM_PCK}/colors/opt" clone --depth 1 https://github.com/fxn/vim-monochrome \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/autozimu/LanguageClient-neovim \
+	# && git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/bfredl/nvim-ipy \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/scrooloose/nerdtree \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/scrooloose/syntastic \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/zchee/deoplete-jedi \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/Shougo/deoplete.nvim \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/tpope/vim-fugitive \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/bling/vim-airline \
+	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/zanglg/nova.vim \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/sk1418/Join \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/alvan/vim-closetag \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/junegunn/seoul256.vim \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/Xuyuanp/nerdtree-git-plugin \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/ryanoasis/vim-devicons \
+	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/crusoexia/vim-monokai \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/jpalardy/vim-slime \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/hanschen/vim-ipython-cell \
 	&& git -C "${NVIM_PCK}/common/start" clone --depth 1 https://github.com/davidhalter/jedi \

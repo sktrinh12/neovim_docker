@@ -3,3 +3,4 @@
 !entrypoint.sh
 !README.md
 !.gitignore
+/plugged/*
